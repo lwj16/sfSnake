@@ -6,7 +6,7 @@
 #include "Screen.h"
 #include "Snake.h"
 #include "Fruit.h"
-#include "SetColor.h"
+#include "ColorDefs.h"
 
 namespace sfSnake
 {

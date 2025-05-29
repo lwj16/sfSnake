@@ -4,14 +4,14 @@
 #include <SFML/Graphics.hpp>
 
 #include "Screen.h"
-#include "SetColor.h"
+#include "ColorDefs.h"
 
 namespace sfSnake
 {
 class MenuScreen : public Screen
 {
 public:
-	MenuScreen();
+	MenuScreen(BgColor bg, bool showGrid, GridColor grid);
 
 	void handleInput(sf::RenderWindow& window) override;
 	void update(sf::Time delta) override;

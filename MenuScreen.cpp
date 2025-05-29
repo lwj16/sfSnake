@@ -4,17 +4,19 @@
 
 #include "GameScreen.h"
 #include "MenuScreen.h"
+#include "SettingsScreen.h"
 #include "Game.h"
 
 using namespace sfSnake;
 
-MenuScreen::MenuScreen()
+MenuScreen::MenuScreen(BgColor bg, bool showGrid, GridColor grid) : bgColor_(bg), showGrid_(showGrid), gridColor_(grid)
 {
 	font_.loadFromFile("Fonts/game_over.ttf");
 	text_.setFont(font_);
 	text_.setString(
 		"\n\n\n\n\n\n\n\n\nPress [SPACE] to play"
-		"\n\nPress [ESC] to quit");
+		"\n\nPress [ESC] to quit"
+		"\n\nPress [S] to settings");
 
 	snakeText_.setFont(font_);
 	snakeText_.setString("Snake!");
@@ -40,29 +42,8 @@ void MenuScreen::handleInput(sf::RenderWindow& window)
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
         window.close();
 
-    // 背景色切换：B键
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::B)) {
-        if (bgColor_ == BgColor::White)
-            bgColor_ = BgColor::Black;
-        else if (bgColor_ == BgColor::Black)
-            bgColor_ = BgColor::Brown;
-        else
-            bgColor_ = BgColor::White;
-    }
-
-    // 网格开关：G键
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::G)) {
-        showGrid_ = !showGrid_;
-    }
-
-    // 网格颜色切换：C键
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::C)) {
-        if (gridColor_ == GridColor::White)
-            gridColor_ = GridColor::Black;
-        else if (gridColor_ == GridColor::Black)
-            gridColor_ = GridColor::Brown;
-        else
-            gridColor_ = GridColor::White;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+        Game::Screen = std::make_shared<SettingsScreen>(bgColor_, showGrid_, gridColor_);
     }
 }
 
@@ -128,20 +109,4 @@ void MenuScreen::render(sf::RenderWindow& window)
 {
 	window.draw(text_);
 	window.draw(snakeText_);
-
-	sf::Text info;
-	info.setFont(font_);
-	info.setCharacterSize(24);
-	info.setFillColor(sf::Color::Blue);
-	std::string bgName = getBgColorName();
-	std::string gridName = getGridColorName();
-	std::string gridStatus = showGrid_ ? "Opened" : "Closed";
-	info.setString(
-		"[B]:Set BgColor  [G]:Enable Grid  [C]:Set GridColor\n"
-		"BackGround: " + bgName +
-		"  Grid: " + gridStatus +
-		"  GridColor: " + gridName
-	);
-	info.setPosition(20, Game::Height - 60);
-	window.draw(info);
 }
