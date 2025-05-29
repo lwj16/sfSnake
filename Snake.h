@@ -21,7 +21,7 @@ class Snake
 public:
 	Snake();
 
-	void handleInput();
+	void handleInput(sf::RenderWindow& window);
 	void update(sf::Time delta);
 	void render(sf::RenderWindow& window);
 
@@ -39,6 +39,9 @@ private:
 	void initNodes();
 
 	bool hitSelf_;
+	bool useMouseDirection_;
+	
+	sf::Vector2f mouseDirection_;
 
 	sf::Vector2f position_;
 	Direction direction_;
