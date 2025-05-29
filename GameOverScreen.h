@@ -4,13 +4,14 @@
 #include <SFML/Graphics.hpp>
 
 #include "Screen.h"
+#include "ColorDefs.h"
 
 namespace sfSnake
 {
 class GameOverScreen : public Screen
 {
 public:
-	GameOverScreen(std::size_t score);
+	GameOverScreen(std::size_t score, BgColor bg, bool showGrid, GridColor grid);
 
 	void handleInput(sf::RenderWindow& window) override;
 	void update(sf::Time delta) override;
@@ -20,7 +21,10 @@ private:
 	sf::Font font_;
 	sf::Text text_;
 
-	unsigned score_;
+	std::size_t score_;
+    BgColor bgColor_;
+    bool showGrid_;
+    GridColor gridColor_;
 };
 }
 

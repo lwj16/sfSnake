@@ -28,25 +28,25 @@ void GameScreen::update(sf::Time delta)
 	snake_.checkFruitCollisions(fruit_);
 
 	if (snake_.hitSelf())
-		Game::Screen = std::make_shared<GameOverScreen>(snake_.getSize());
+		Game::Screen = std::make_shared<GameOverScreen>(snake_.getSize(), bgColor_, showGrid_, gridColor_);
 }
 
 void GameScreen::render(sf::RenderWindow& window)
 {
 	sf::Color bg;
     switch (bgColor_) {
-        case BgColor::White: bg = sf::Color::White; break;
-        case BgColor::Black: bg = sf::Color::Black; break;
-        case BgColor::Brown: bg = sf::Color(139, 69, 19); break;
+        case BgColor::White: bg = sf::Color(235, 239, 242); break;
+        case BgColor::Black: bg = sf::Color(57, 58, 59); break;
+        case BgColor::Brown: bg = sf::Color(158, 88, 28); break;
     }
     window.clear(bg);
 
 	if (showGrid_) {
         sf::Color grid;
         switch (gridColor_) {
-            case GridColor::White: grid = sf::Color::White; break;
-            case GridColor::Black: grid = sf::Color::Black; break;
-            case GridColor::Brown: grid = sf::Color(139, 69, 19); break;
+            case GridColor::White: grid = sf::Color(235, 239, 242); break;
+            case GridColor::Black: grid = sf::Color(57, 58, 59); break;
+            case GridColor::Brown: grid = sf::Color(158, 88, 28); break;
         }
         int gridWidth = Game::Width / SnakeNode::Width;
         int gridHeight = Game::Height / SnakeNode::Height;
@@ -67,7 +67,7 @@ void GameScreen::render(sf::RenderWindow& window)
     }
 
 	snake_.render(window);
-
+ 
 	for (auto fruit : fruit_)
 		fruit.render(window);
 }

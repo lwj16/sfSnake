@@ -29,12 +29,18 @@ Snake::Snake() : direction_(Direction::Up), hitSelf_(false), useMouseDirection_(
 
 void Snake::initNodes()
 {
-	for (int i = 0; i < Snake::InitialSize; ++i)
-	{
-		nodes_.push_back(SnakeNode(sf::Vector2f(
-			Game::Width / 2 - SnakeNode::Width / 2,
-			Game::Height / 2 - (SnakeNode::Height / 2) + (SnakeNode::Height * i))));
-	}
+    nodes_.clear();
+    for (int i = 0; i < Snake::InitialSize; ++i)
+    {
+        SnakeNode::NodeType type = (i == 0) ? SnakeNode::NodeType::Head : SnakeNode::NodeType::Body;
+        nodes_.push_back(SnakeNode(
+            sf::Vector2f(
+                Game::Width / 2 - SnakeNode::Width / 2,
+                Game::Height / 2 - (SnakeNode::Height / 2) + (SnakeNode::Height * i)
+            ),
+            type
+        ));
+    }
 }
 
 void Snake::handleInput(sf::RenderWindow& window)
@@ -171,30 +177,40 @@ void Snake::move()
 {
     for (decltype(nodes_.size()) i = nodes_.size() - 1; i > 0; --i)
     {
-        nodes_[i].setPosition(nodes_.at(i - 1).getPosition());
+        sf::Vector2f prevPos = nodes_[i - 1].getPosition();
+        sf::Vector2f currPos = nodes_[i].getPosition();
+        sf::Vector2f dir = prevPos - currPos;
+        float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+        dir = sf::Vector2f(dir.x / len, dir.y / len);
+        nodes_[i].setDirection(dir);
+        nodes_[i].setPosition(prevPos);
     }
 
+    sf::Vector2f headDir;
     if (useMouseDirection_)
-    {
-        // 按照鼠标方向向量移动一个标准单位
-        nodes_[0].move(mouseDirection_.x * SnakeNode::Width, mouseDirection_.y * SnakeNode::Height);
-    }
+        headDir = mouseDirection_;
     else
     {
         switch (direction_)
         {
-        case Direction::Up:
-            nodes_[0].move(0, -SnakeNode::Height);
-            break;
-        case Direction::Down:
-            nodes_[0].move(0, SnakeNode::Height);
-            break;
-        case Direction::Left:
-            nodes_[0].move(-SnakeNode::Width, 0);
-            break;
-        case Direction::Right:
-            nodes_[0].move(SnakeNode::Width, 0);
-            break;
+        case Direction::Up:    headDir = {0, -1}; break;
+        case Direction::Down:  headDir = {0, 1};  break;
+        case Direction::Left:  headDir = {-1, 0}; break;
+        case Direction::Right: headDir = {1, 0};  break;
+        }
+    }
+    nodes_[0].setDirection(headDir);
+
+    if (useMouseDirection_)
+        nodes_[0].move(mouseDirection_.x * SnakeNode::Width, mouseDirection_.y * SnakeNode::Height);
+    else
+    {
+        switch (direction_)
+        {
+        case Direction::Up:    nodes_[0].move(0, -SnakeNode::Height); break;
+        case Direction::Down:  nodes_[0].move(0, SnakeNode::Height);  break;
+        case Direction::Left:  nodes_[0].move(-SnakeNode::Width, 0);  break;
+        case Direction::Right: nodes_[0].move(SnakeNode::Width, 0);   break;
         }
     }
 }

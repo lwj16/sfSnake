@@ -5,27 +5,37 @@
 
 namespace sfSnake
 {
+enum class NodeType { Head, Body };
+
 class SnakeNode
 {
 public:
-	SnakeNode(sf::Vector2f position = sf::Vector2f(0, 0));
+    enum class NodeType { Head, Body };
 
-	void setPosition(sf::Vector2f position);
-	void setPosition(float x, float y);
+    SnakeNode(sf::Vector2f position = sf::Vector2f(0, 0), NodeType type = NodeType::Body);
 
-	void move(float xOffset, float yOffset);
-
-	void render(sf::RenderWindow& window);
-
-	sf::Vector2f getPosition() const;
-	sf::FloatRect getBounds() const;
+    void setPosition(sf::Vector2f position);
+    void setPosition(float x, float y);
+    void move(float xOffset, float yOffset);
+    sf::FloatRect getBounds() const;
+    sf::Vector2f getPosition() const;
+    void render(sf::RenderWindow& window);
 
 	static const float Width;
 	static const float Height;
 
+    static void loadHeadTexture(const std::string& path);
+
+	void setDirection(const sf::Vector2f& dir);
+
 private:
-	sf::RectangleShape shape_;
-	sf::Vector2f position_;
+    sf::Vector2f position_;
+    NodeType type_;
+    sf::RectangleShape shape_;
+    sf::CircleShape circle_;
+    static sf::Texture headTexture_;
+    sf::Sprite headSprite_;
+	sf::Vector2f direction_;
 };
 }
 
