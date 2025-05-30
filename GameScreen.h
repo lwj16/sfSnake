@@ -7,6 +7,8 @@
 #include "Snake.h"
 #include "Fruit.h"
 #include "ColorDefs.h"
+#include "AutoSnake.h"
+#include "Map.h"
 
 namespace sfSnake
 {
@@ -26,6 +28,9 @@ public:
 
 private:
 	Snake snake_;
+	AutoSnake autoSnake_;
+	Map map_;
+
 	std::vector<Fruit> fruit_;
 
 	BgColor bgColor_ = BgColor::White;

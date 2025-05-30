@@ -11,7 +11,7 @@ namespace sfSnake
 class GameOverScreen : public Screen
 {
 public:
-	GameOverScreen(std::size_t score, BgColor bg, bool showGrid, GridColor grid);
+	GameOverScreen(int score, BgColor bg, bool showGrid, GridColor grid);
 
 	void handleInput(sf::RenderWindow& window) override;
 	void update(sf::Time delta) override;

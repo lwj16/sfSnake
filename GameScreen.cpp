@@ -6,10 +6,12 @@
 #include "GameScreen.h"
 #include "GameOverScreen.h"
 #include "Game.h"
+#include "Map.h"
 
 using namespace sfSnake;
 
-GameScreen::GameScreen(BgColor bg, bool showGrid, GridColor grid) : bgColor_(bg), showGrid_(showGrid), gridColor_(grid), snake_()
+GameScreen::GameScreen(BgColor bg, bool showGrid, GridColor grid) 
+: bgColor_(bg), showGrid_(showGrid), gridColor_(grid), snake_(), map_(Game::Width, Game::Height)
 {
 
 }
@@ -24,11 +26,44 @@ void GameScreen::update(sf::Time delta)
 	if (fruit_.size() == 0)
 		generateFruit();
 
-	snake_.update(delta);
+    map_.clear();
+
+    for (const auto& node : snake_.nodes) {
+        int x = static_cast<int>(node.getPosition().x / SnakeNode::Width);
+        int y = static_cast<int>(node.getPosition().y / SnakeNode::Height);
+        map_.setObstacle(x-1, y-1, true);
+        map_.setObstacle(x-1, y, true);
+        map_.setObstacle(x-1, y+1, true);
+        map_.setObstacle(x, y-1, true);
+        map_.setObstacle(x, y, true);
+        map_.setObstacle(x, y+1, true);
+        map_.setObstacle(x+1, y-1, true);
+        map_.setObstacle(x+1, y, true);
+        map_.setObstacle(x+1, y+1, true);
+    }
+
+    for (const auto& node : autoSnake_.nodes) {
+        int x = static_cast<int>(node.getPosition().x / SnakeNode::Width);
+        int y = static_cast<int>(node.getPosition().y / SnakeNode::Height);
+        map_.setObstacle(x, y, true);
+    }
+
+    snake_.update(delta);
 	snake_.checkFruitCollisions(fruit_);
+    
+    autoSnake_.update(delta, map_, fruit_);
+    autoSnake_.checkFruitCollisions(fruit_);
+
+    const auto &MankindHead = snake_.nodes[0];
+    for (const auto& RobotNode : autoSnake_.nodes) {
+        if (MankindHead.getBounds().intersects(RobotNode.getBounds())) {
+            Game::Screen = std::make_shared<GameOverScreen>(snake_.getSize() - autoSnake_.getSize(), bgColor_, showGrid_, gridColor_);
+            return;
+        }
+    }
 
 	if (snake_.hitSelf())
-		Game::Screen = std::make_shared<GameOverScreen>(snake_.getSize(), bgColor_, showGrid_, gridColor_);
+		Game::Screen = std::make_shared<GameOverScreen>(snake_.getSize() - autoSnake_.getSize(), bgColor_, showGrid_, gridColor_);
 }
 
 void GameScreen::render(sf::RenderWindow& window)
@@ -67,7 +102,8 @@ void GameScreen::render(sf::RenderWindow& window)
     }
 
 	snake_.render(window);
- 
+    autoSnake_.render(window);
+
 	for (auto fruit : fruit_)
 		fruit.render(window);
 }

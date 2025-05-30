@@ -10,7 +10,7 @@
 
 using namespace sfSnake;
 
-GameOverScreen::GameOverScreen(std::size_t score, BgColor bg, bool showGrid, GridColor grid): score_(score), bgColor_(bg), showGrid_(showGrid), gridColor_(grid)
+GameOverScreen::GameOverScreen(int score, BgColor bg, bool showGrid, GridColor grid): score_(score), bgColor_(bg), showGrid_(showGrid), gridColor_(grid)
 {
     font_.loadFromFile("Fonts/game_over.ttf");
     text_.setFont(font_);

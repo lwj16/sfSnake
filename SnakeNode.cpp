@@ -14,28 +14,49 @@ void SnakeNode::loadHeadTexture(const std::string& path) {
     headTexture_.loadFromFile(path);
 }
 
-SnakeNode::SnakeNode(sf::Vector2f position, NodeType type): position_(position), type_(type), direction_(0.f, -1.f)
+SnakeNode::SnakeNode(sf::Vector2f position, NodeType type, SnakeType snake): position_(position), type_(type), snake_(snake), direction_(0.f, -1.f)
 {
-    if (type_ == NodeType::Head) {
-		loadHeadTexture("Images/head.png");
-        headSprite_.setTexture(headTexture_);
-        headSprite_.setPosition(position_);
-        headSprite_.setScale(
-            2.f * SnakeNode::Width / headTexture_.getSize().x,
-            2.f * SnakeNode::Height / headTexture_.getSize().y
-        );
-		headSprite_.setOrigin(headTexture_.getSize().x / 2.f, headTexture_.getSize().y / 2.f);
-		headSprite_.setPosition(position_.x + SnakeNode::Width / 2.f, position_.y + SnakeNode::Height / 2.f);
-    } else {
-		circle_.setRadius(SnakeNode::Width / 2.f);
-		circle_.setFillColor(sf::Color(254, 217, 34));
-		circle_.setOrigin(circle_.getRadius(), circle_.getRadius());
-		circle_.setPosition(position_.x + SnakeNode::Width / 2.f, position_.y + SnakeNode::Height / 2.f);
+    if(snake_ == SnakeType::Mankind) {
+        if (type_ == NodeType::Head) {
+	    	loadHeadTexture("Images/MankindHead.png");
+            headSprite_.setTexture(headTexture_);
+            headSprite_.setPosition(position_);
+            headSprite_.setScale(
+                2.f * SnakeNode::Width / headTexture_.getSize().x,
+                2.f * SnakeNode::Height / headTexture_.getSize().y
+            );
+		    headSprite_.setOrigin(headTexture_.getSize().x / 2.f, headTexture_.getSize().y / 2.f);
+    		headSprite_.setPosition(position_.x + SnakeNode::Width / 2.f, position_.y + SnakeNode::Height / 2.f);
+        } else {
+		    circle_.setRadius(SnakeNode::Width / 2.f);
+    		circle_.setFillColor(sf::Color(254, 217, 34));
+	    	circle_.setOrigin(circle_.getRadius(), circle_.getRadius());
+		    circle_.setPosition(position_.x + SnakeNode::Width / 2.f, position_.y + SnakeNode::Height / 2.f);
 
-		shape_.setSize(sf::Vector2f(SnakeNode::Width / 4, SnakeNode::Height));
-		shape_.setFillColor(sf::Color::Black);
-		shape_.setOrigin(shape_.getSize().x / 2.f, shape_.getSize().y / 2.f);
-		shape_.setPosition(position_.x + SnakeNode::Width / 2.f, position_.y + SnakeNode::Height / 2.f);
+    		shape_.setSize(sf::Vector2f(SnakeNode::Width / 4, SnakeNode::Height));
+	    	shape_.setFillColor(sf::Color::Black);
+		    shape_.setOrigin(shape_.getSize().x / 2.f, shape_.getSize().y / 2.f);
+    		shape_.setPosition(position_.x + SnakeNode::Width / 2.f, position_.y + SnakeNode::Height / 2.f);
+        }
+    }
+
+    if(snake_ == SnakeType::Robot) {
+        if (type_ == NodeType::Head) {
+	    	loadHeadTexture("Images/MankindHead.png");
+            headSprite_.setTexture(headTexture_);
+            headSprite_.setPosition(position_);
+            headSprite_.setScale(
+                2.f * SnakeNode::Width / headTexture_.getSize().x,
+                2.f * SnakeNode::Height / headTexture_.getSize().y
+            );
+		    headSprite_.setOrigin(headTexture_.getSize().x / 2.f, headTexture_.getSize().y / 2.f);
+    		headSprite_.setPosition(position_.x + SnakeNode::Width / 2.f, position_.y + SnakeNode::Height / 2.f);
+        } else {
+		    circle_.setRadius(SnakeNode::Width / 2.f);
+    		circle_.setFillColor(sf::Color(254, 34, 34));
+	    	circle_.setOrigin(circle_.getRadius(), circle_.getRadius());
+		    circle_.setPosition(position_.x + SnakeNode::Width / 2.f, position_.y + SnakeNode::Height / 2.f);
+        }
     }
 }
 

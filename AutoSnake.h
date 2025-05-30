@@ -1,28 +1,19 @@
-#ifndef SNAKE_H
-#define SNAKE_H
-
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
+#ifndef AUTOSNAKE_H
+#define AUTOSNAKE_H
 
 #include <vector>
+#include <SFML/Graphics.hpp>
 
 #include "SnakeNode.h"
 #include "Fruit.h"
+#include "Map.h"
 
-namespace sfSnake
-{
-	enum class Direction
-	{
-		Left, Right, Up, Down
-	};
-
-class Snake
-{
+namespace sfSnake {
+class AutoSnake {
 public:
-	Snake();
+	AutoSnake();
 
-	void handleInput(sf::RenderWindow& window);
-	void update(sf::Time delta);
+	void update(sf::Time delta, const Map& map, const std::vector<Fruit>& fruits);
 	void render(sf::RenderWindow& window);
 
 	void checkFruitCollisions(std::vector<Fruit>& fruits);
@@ -33,6 +24,8 @@ public:
 
 	std::vector<SnakeNode> nodes;
 
+	std::vector<sf::Vector2i> findPathAStar(const Map& map, sf::Vector2i start, sf::Vector2i goal);
+
 private:
 	void move();
 	void grow();
@@ -41,18 +34,11 @@ private:
 	void initNodes();
 
 	bool hitSelf_;
-	bool useMouseDirection_;
-	
-	sf::Vector2f mouseDirection_;
+
+    enum class Direction { Up, Down, Left, Right, UpLeft, UpRight, DownLeft, DownRight };
 
 	sf::Vector2f position_;
 	Direction direction_;
-
-	sf::SoundBuffer pickupBuffer_;
-	sf::Sound pickupSound_;
-
-	sf::SoundBuffer dieBuffer_;
-	sf::Sound dieSound_;
 
 	static const int InitialSize;
 };

@@ -11,8 +11,9 @@ class SnakeNode
 {
 public:
     enum class NodeType { Head, Body };
+    enum class SnakeType { Mankind, Robot };
 
-    SnakeNode(sf::Vector2f position = sf::Vector2f(0, 0), NodeType type = NodeType::Body);
+    SnakeNode(sf::Vector2f position = sf::Vector2f(0, 0), NodeType type = NodeType::Body, SnakeType snake = SnakeType::Mankind);
 
     void setPosition(sf::Vector2f position);
     void setPosition(float x, float y);
@@ -31,6 +32,7 @@ public:
 private:
     sf::Vector2f position_;
     NodeType type_;
+    SnakeType snake_;
     sf::RectangleShape shape_;
     sf::CircleShape circle_;
     static sf::Texture headTexture_;

@@ -29,16 +29,17 @@ Snake::Snake() : direction_(Direction::Up), hitSelf_(false), useMouseDirection_(
 
 void Snake::initNodes()
 {
-    nodes_.clear();
+    nodes.clear();
     for (int i = 0; i < Snake::InitialSize; ++i)
     {
         SnakeNode::NodeType type = (i == 0) ? SnakeNode::NodeType::Head : SnakeNode::NodeType::Body;
-        nodes_.push_back(SnakeNode(
+        SnakeNode::SnakeType snake = SnakeNode::SnakeType::Mankind;
+        nodes.push_back(SnakeNode(
             sf::Vector2f(
-                Game::Width / 2 - SnakeNode::Width / 2,
+                Game::Width / 3 - SnakeNode::Width / 2,
                 Game::Height / 2 - (SnakeNode::Height / 2) + (SnakeNode::Height * i)
             ),
-            type
+            type, snake
         ));
     }
 }
@@ -64,7 +65,7 @@ void Snake::handleInput(sf::RenderWindow& window)
 
     // 鼠标左键按下时，设置方向向量
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-        sf::Vector2f headPos = nodes_[0].getPosition();
+        sf::Vector2f headPos = nodes[0].getPosition();
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mousePos);
 
@@ -91,7 +92,7 @@ void Snake::checkFruitCollisions(std::vector<Fruit>& fruits)
 
     for (auto it = fruits.begin(); it != fruits.end(); ++it)
     {
-        if (it->getBounds().intersects(nodes_[0].getBounds())) {
+        if (it->getBounds().intersects(nodes[0].getBounds())) {
             toRemove = it;
             growCount = it->getGrowLength();
         }
@@ -108,7 +109,7 @@ void Snake::checkFruitCollisions(std::vector<Fruit>& fruits)
 
 void Snake::grow()
 {
-    sf::Vector2f tailPos = nodes_.back().getPosition();
+    sf::Vector2f tailPos = nodes.back().getPosition();
     sf::Vector2f newNodePos;
 
     if (useMouseDirection_) {
@@ -131,12 +132,12 @@ void Snake::grow()
             break;
         }
     }
-    nodes_.push_back(SnakeNode(newNodePos));
+    nodes.push_back(SnakeNode(newNodePos, SnakeNode::NodeType::Body, SnakeNode::SnakeType::Mankind));
 }
 
 unsigned Snake::getSize() const
 {
-	return nodes_.size();
+	return nodes.size();
 }
 
 bool Snake::hitSelf() const
@@ -146,11 +147,11 @@ bool Snake::hitSelf() const
 
 void Snake::checkSelfCollisions()
 {
-	SnakeNode& headNode = nodes_[0];
+	SnakeNode& headNode = nodes[0];
 
-	for (decltype(nodes_.size()) i = 1; i < nodes_.size(); ++i)
+	for (decltype(nodes.size()) i = 1; i < nodes.size(); ++i)
 	{
-		if (headNode.getBounds().intersects(nodes_[i].getBounds()))
+		if (headNode.getBounds().intersects(nodes[i].getBounds()))
 		{
 			dieSound_.play();
 			sf::sleep(sf::seconds(dieBuffer_.getDuration().asSeconds()));
@@ -161,7 +162,7 @@ void Snake::checkSelfCollisions()
 
 void Snake::checkEdgeCollisions()
 {
-	SnakeNode& headNode = nodes_[0];
+	SnakeNode& headNode = nodes[0];
 
 	if (headNode.getPosition().x <= 0)
 		headNode.setPosition(Game::Width, headNode.getPosition().y);
@@ -175,15 +176,15 @@ void Snake::checkEdgeCollisions()
 
 void Snake::move()
 {
-    for (decltype(nodes_.size()) i = nodes_.size() - 1; i > 0; --i)
+    for (decltype(nodes.size()) i = nodes.size() - 1; i > 0; --i)
     {
-        sf::Vector2f prevPos = nodes_[i - 1].getPosition();
-        sf::Vector2f currPos = nodes_[i].getPosition();
+        sf::Vector2f prevPos = nodes[i - 1].getPosition();
+        sf::Vector2f currPos = nodes[i].getPosition();
         sf::Vector2f dir = prevPos - currPos;
         float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
         dir = sf::Vector2f(dir.x / len, dir.y / len);
-        nodes_[i].setDirection(dir);
-        nodes_[i].setPosition(prevPos);
+        nodes[i].setDirection(dir);
+        nodes[i].setPosition(prevPos);
     }
 
     sf::Vector2f headDir;
@@ -199,24 +200,24 @@ void Snake::move()
         case Direction::Right: headDir = {1, 0};  break;
         }
     }
-    nodes_[0].setDirection(headDir);
+    nodes[0].setDirection(headDir);
 
     if (useMouseDirection_)
-        nodes_[0].move(mouseDirection_.x * SnakeNode::Width, mouseDirection_.y * SnakeNode::Height);
+        nodes[0].move(mouseDirection_.x * SnakeNode::Width, mouseDirection_.y * SnakeNode::Height);
     else
     {
         switch (direction_)
         {
-        case Direction::Up:    nodes_[0].move(0, -SnakeNode::Height); break;
-        case Direction::Down:  nodes_[0].move(0, SnakeNode::Height);  break;
-        case Direction::Left:  nodes_[0].move(-SnakeNode::Width, 0);  break;
-        case Direction::Right: nodes_[0].move(SnakeNode::Width, 0);   break;
+        case Direction::Up:    nodes[0].move(0, -SnakeNode::Height); break;
+        case Direction::Down:  nodes[0].move(0, SnakeNode::Height);  break;
+        case Direction::Left:  nodes[0].move(-SnakeNode::Width, 0);  break;
+        case Direction::Right: nodes[0].move(SnakeNode::Width, 0);   break;
         }
     }
 }
 
 void Snake::render(sf::RenderWindow& window)
 {
-	for (auto& node : nodes_)
+	for (auto& node : nodes)
 		node.render(window);
 }
