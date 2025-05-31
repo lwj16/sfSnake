@@ -150,3 +150,7 @@ stateDiagram-v2
 ### 视频链接
 
 https://www.bilibili.com/video/BV1YL7NzbEgU/?spm_id_from=333.1387.list.card_archive.click&vd_source=48d005c7bdc06745d963e89f277278c9
+
+###  原始代码链接
+
+本项目改编自：https://github.com/jhpy1024/sfSnake
